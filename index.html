@@ -457,16 +457,26 @@ function sendToPanel(name, going, count) {
 
     try {
 
-        const datos = new URLSearchParams();
+        const datos = JSON.stringify({
 
-        datos.append("nombre", name);
-        datos.append("estado", going ? "confirmado" : "no");
-        datos.append("personas", String(count));
+            nombre: name,
+
+            estado: going
+                ? "confirmado"
+                : "no",
+
+            personas: Number(count) || 0
+
+        });
 
         fetch(SCRIPT_URL, {
+
             method: "POST",
+
             mode: "no-cors",
-            body: datos.toString()
+
+            body: datos
+
         });
 
     } catch (error) {
