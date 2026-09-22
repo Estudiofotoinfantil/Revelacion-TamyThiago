@@ -450,15 +450,33 @@ function confirmRSVP(going){
 
 // Envía la confirmación al panel de la organizadora (Google Form -> Google Sheets).
 // No hace nada si todavía no configuraste CONFIG.googleForm (ver instrucciones al final del archivo).
-function sendToPanel(name, going, count){
-  try{
-    if(!CONFIG.googleForm || CONFIG.googleForm.action.includes('TU_FORM_ID')) return;
-    const data = new FormData();
-    data.append(CONFIG.googleForm.entryNombre, name);
-    data.append(CONFIG.googleForm.entryAsiste, going ? 'Sí' : 'No');
-    data.append(CONFIG.googleForm.entryCantidad, String(count));
-    fetch(CONFIG.googleForm.action, {method:'POST', mode:'no-cors', body:data}).catch(()=>{});
-  }catch(e){}
+function sendToPanel(name, going, count) {
+
+    const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbzjrfUcgu0RafzyAqLHOs7UbPneYO492QBNw7lETNyadxrtTcTYRO_SZGBom_k9ZZEM/exec";
+
+    try {
+
+        const datos = new URLSearchParams();
+
+        datos.append("nombre", name);
+        datos.append("estado", going ? "confirmado" : "no");
+        datos.append("personas", String(count));
+
+        fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            body: datos.toString()
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error enviando asistencia:",
+            error
+        );
+
+    }
 }
 
 // ---- Music ----
